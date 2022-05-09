@@ -70,3 +70,49 @@ or this command to do dist-upgrade:
 ```
 ansible all -m apt -a "upgrade=dist" --become --ask-become-pass
 ```
+
+# Creating playbook
+
+### creating a plybook to install nginx:
+```
+touch nginx.yml
+
+tee -a nginx.yml <<EOF
+---
+- hosts: all
+  become: true
+  tasks:
+
+  - name: update repository index
+    apt:
+      update_cache: yes
+
+  - name: install nginx package
+    apt:
+      name: nginx
+      state: latest # install the latest version
+EOF
+```
+
+to install the created playbook:
+```
+ansible-playbook --ask-become-pass nginx.yml
+```
+
+### Creating a playbook to remove apache2 (if installed)
+
+```
+touch remove_apache2.yml
+tee -a remove_apache2.yml <<EOF
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: remove apache2
+      apt:
+        name: apache2
+        state: absent # <- the absent state removes the package 
+EOF
+
+ansible-playbook --ask-become-pass remove_apache2.yml
+```
