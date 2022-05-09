@@ -53,3 +53,20 @@ ansible all -m gather_facts | less
 ansible all -m gather_facts --limit server_ip | less
 
 ```
+
+## Run command that needs sudo permission
+```
+ansible all -m apt -a update_cache=true --become --ask-become-pass
+```
+- **--become** causes to run the command as `sudo`
+- **--ask-become-pass** take sudo password
+
+## Install simple app using apt
+```
+ansible all -m apt -a name=nginx --become --ask-become-pass
+```
+
+or this command to do dist-upgrade:
+```
+ansible all -m apt -a "upgrade=dist" --become --ask-become-pass
+```
