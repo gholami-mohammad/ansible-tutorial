@@ -142,7 +142,7 @@ Install nginx on ubuntu and centos server:
 
   - name: update repository index
     when: ansible_distribution == "CentOS"
-    apt:
+    dnf:
       update_cache: yes
 
   - name: install nginx package
@@ -150,4 +150,27 @@ Install nginx on ubuntu and centos server:
     dnf:
       name: nginx
       state: latest # install the latest version
+```
+
+## Refactoring playbook
+Refactoring the last playbook:
+```
+---
+- hosts: all
+  become: true
+  tasks:
+
+  - name: install nginx package
+    when: ansible_distribution == "Ubuntu"
+    apt:
+      name: nginx
+      state: latest # install the latest version
+      update_cache: yes # <- update_cache is an option for apt so it will update cache before installing nginx
+
+  - name: install nginx package
+    when: ansible_distribution == "CentOS"
+    dnf:
+      name: nginx
+      state: latest # install the latest version
+      update_cache: yes
 ```
