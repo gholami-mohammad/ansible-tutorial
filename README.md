@@ -117,6 +117,7 @@ EOF
 ansible-playbook --ask-become-pass remove_apache2.yml
 ```
 
+---
 ## Using `when` in playbook
 For each task, you can add `when` command to run if the condition is true.
 For example, run a task if the server is Ubuntu: `when: ansible_distribution == "Ubuntu"` or check if server is Ubuntu or Debian: `when: ansible_distribution in ["Ubuntu" , "Debian"]`.
@@ -152,6 +153,7 @@ Install nginx on ubuntu and centos server:
       state: latest # install the latest version
 ```
 
+---
 ## Refactoring playbook
 Refactoring the last playbook:
 ```
@@ -173,4 +175,26 @@ Refactoring the last playbook:
       name: nginx
       state: latest # install the latest version
       update_cache: yes
+```
+
+---
+## Using `variables` in playbook file
+
+Example: Install apache package on Ubuntu and CentOS. Ubuntu package name is apache2 and centos package name is httpd.
+```
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: install apache
+    package: # <- package is a generic package manager that chooses the correct package manager based on OS.
+      name: "{{ apache_package }}"
+      state: latest
+      update_cache: yes
+```
+
+And edit your inventory to add variables:
+```
+192.168.1.2 apache_package=apache2 # <- ubuntu server
+192.168.1.3 apache_package=httpd # <- centos server
 ```
