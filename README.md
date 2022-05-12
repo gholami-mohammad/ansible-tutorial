@@ -116,3 +116,38 @@ EOF
 
 ansible-playbook --ask-become-pass remove_apache2.yml
 ```
+
+## Using `when` in playbook
+For each task, you can add `when` command to run if the condition is true.
+For example, run a task if the server is Ubuntu: `when: ansible_distribution == "Ubuntu"` or check if server is Ubuntu or Debian: `when: ansible_distribution in ["Ubuntu" , "Debian"]`.
+Every keys that return from `ansible all -m gather_facts` can be used in `when` command.
+
+Install nginx on ubuntu and centos server:
+```
+---
+- hosts: all
+  become: true
+  tasks:
+
+  - name: update repository index
+    when: ansible_distribution == "Ubuntu"
+    apt:
+      update_cache: yes
+
+  - name: install nginx package
+    when: ansible_distribution == "Ubuntu"
+    apt:
+      name: nginx
+      state: latest # install the latest version
+
+  - name: update repository index
+    when: ansible_distribution == "CentOS"
+    apt:
+      update_cache: yes
+
+  - name: install nginx package
+    when: ansible_distribution == "CentOS"
+    dnf:
+      name: nginx
+      state: latest # install the latest version
+```
