@@ -11,7 +11,7 @@ sudo apt install ansible
 # Config ansible
 
 ## Create inventory file
-create `inventory` file and add servers IP addresses to the file.
+create `inventory` file and add servers' IP addresses to the file.
 
 ```
 touch inventory
@@ -27,21 +27,10 @@ EOF
 ```
 ansible all --private-key ~/.ssh/ansible -i inventory -m ping
 ```
-You have to get success message for all your servers.
+You have to get a success message for all your servers.
 
 ## Create config file
-```
-touch ansible.cfg
-
-tee -a ansible.cfg <<EOF
-[defaults]
-# inventory file path
-inventory = inventory
-private_key_file = ~/.ssh/ansible
-EOF
-```
-
-re-check ping command with local config file:
+re-check the ping command with a local config file:
 ```
 ansible all -m ping
 ```
@@ -61,7 +50,7 @@ ansible all -m apt -a update_cache=true --become --ask-become-pass
 - **--become** causes to run the command as `sudo`
 - **--ask-become-pass** take sudo password
 
-## Install simple app using apt
+## Install a simple app using apt
 ```
 ansible all -m apt -a name=nginx --become --ask-become-pass
 ```
@@ -73,7 +62,7 @@ ansible all -m apt -a "upgrade=dist" --become --ask-become-pass
 
 # Creating playbook
 
-### creating a plybook to install nginx:
+### creating a playbook to install Nginx:
 ```
 touch nginx.yml
 
@@ -178,7 +167,7 @@ Refactoring the last playbook:
 ```
 
 ---
-## Using `variables` in playbook file
+## Using variables in the playbook file
 
 Example: Install Apache package on Ubuntu and CentOS. Ubuntu package name is apache2 and CentOS package name is `httpd`.
 ```
