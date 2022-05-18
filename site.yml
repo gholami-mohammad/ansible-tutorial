@@ -1,0 +1,27 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+    - name: Install updates(CentOS servers)
+      when: ansible_distribution == "CentOS"
+      dnf:
+        update_only: yes
+        update_cache: yes
+    
+    - name: Install updates(Ubuntu servers)
+      when: ansible_distribution == "Ubuntu"
+      apt:
+        update_cache: yes
+        upgrade: dist
+      
+
+- hosts: web_servers
+  become: true
+  tasks:
+  - name: install nginx package
+    package: # <- selects the right package manager base on the target OS
+      name: nginx
+      state: latest
+
+      
