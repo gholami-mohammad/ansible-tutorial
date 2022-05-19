@@ -48,3 +48,11 @@
     package:
       name: git
       state: latest
+  - name: copy default html file for web servers
+    tags: html
+    copy:
+      src: default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644

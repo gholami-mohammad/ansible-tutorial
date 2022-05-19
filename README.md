@@ -298,3 +298,18 @@ exmple:
 ansible-playbook --tags "nginx,ubuntu" --ask-become-pass site.yml
 ```
 This will run playbooks for tasks that have `nginx` or `ubuntu` tag.
+
+## Copying files
+To copy files to the server, create a directory named `files` and put your files there.
+```
+---
+- hosts: all
+  tasks:
+    - name: copy default html file for web servers
+      copy:
+        src: default_site.html
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: 0644
+```
