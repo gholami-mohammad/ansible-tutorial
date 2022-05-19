@@ -1,16 +1,22 @@
 ---
 
 - hosts: all
+  tags:
+    - always
   become: true
   tasks:
     - name: Install updates(CentOS servers)
       when: ansible_distribution == "CentOS"
+      tags:
+        - always # <- always run this task
       dnf:
         update_only: yes
         update_cache: yes
     
     - name: Install updates(Ubuntu servers)
       when: ansible_distribution == "Ubuntu"
+      tags:
+        - always # <- always run this task
       apt:
         update_cache: yes
         upgrade: dist
@@ -20,8 +26,25 @@
   become: true
   tasks:
   - name: install nginx package
+    tags:
+      - nginx
+      - centos
+      - ubuntu
     package: # <- selects the right package manager base on the target OS
       name: nginx
       state: latest
-
-      
+  - name: install php package
+    tags:
+      - php
+      - ubuntu
+    package:
+      name: php
+      state: latest
+  - name: install git package
+    tags:
+      - git
+      - ubuntu
+      - centos
+    package:
+      name: git
+      state: latest

@@ -217,3 +217,84 @@ When the inventory file contains multiple groups, in the YAML file you can targe
 ---
 - hosts: web_servers
 ``` 
+
+## Tags
+By adding tags to plays and tasks, you can run tasks or plays with specific tags. There are 2 special tags: `always` and `never` for more information read [this](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html#special-tags-always-and-never) article.
+
+```
+---
+
+- hosts: all
+  tags:
+    - always
+  become: true
+  tasks:
+    - name: Install updates(CentOS servers)
+      when: ansible_distribution == "CentOS"
+      tags:
+        - always # <- always run this task
+      dnf:
+        update_only: yes
+        update_cache: yes
+    
+    - name: Install updates(Ubuntu servers)
+      when: ansible_distribution == "Ubuntu"
+      tags:
+        - always # <- always run this task
+      apt:
+        update_cache: yes
+        upgrade: dist
+      
+
+- hosts: web_servers
+  become: true
+  tasks:
+  - name: install nginx package
+    tags:
+      - nginx
+      - centos
+      - ubuntu
+    package: # <- selects the right package manager base on the target OS
+      name: nginx
+      state: latest
+  - name: install php package
+    tags:
+      - php
+      - ubuntu
+    package:
+      name: php
+      state: latest
+  - name: install git package
+    tags:
+      - git
+      - ubuntu
+      - centos
+    package:
+      name: git
+      state: latest
+```
+
+### list tags of a playbook
+```
+ansible-playbook --list-tags site.yml
+```
+
+### Run playbook against specific tags
+file option to use tags to run playbooks: [reference](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html#selecting-or-skipping-tags-when-you-run-a-playbook)
+
+* `--tags all` - run all tasks, ignore tags (default behavior)
+
+* `--tags [tag1, tag2]` - run only tasks with either the tag tag1 or the tag tag2
+
+* `--skip-tags [tag3, tag4]` - run all tasks except those with either the tag tag3 or the tag tag4
+
+* `--tags tagged` - run only tasks with at least one tag
+
+* `--tags untagged` - run only tasks with no tags
+
+
+exmple:
+```
+ansible-playbook --tags "nginx,ubuntu" --ask-become-pass site.yml
+```
+This will run playbooks for tasks that have `nginx` or `ubuntu` tag.
