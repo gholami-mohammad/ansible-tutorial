@@ -313,3 +313,45 @@ To copy files to the server, create a directory named `files` and put your files
         group: root
         mode: 0644
 ```
+
+## Managing services
+To start, stop, restart, enable, or disable a service, you can add a play like this:
+```
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: start nginx service
+      service:
+        name: nginx
+        state: started # it is equal to 'sudo systemctl start nginx' command in centos and ubuntu
+        enabled: yes # it is equal to 'sudo systemctl enable nginx' command in centos and ubuntu
+```
+The value of `state` could be one of these 4 options:
+- reloaded
+- restarted
+- started
+- stopped
+
+## Registering a change on a task
+You want to register a state change after a task was executed, and then use that state in other tasks:
+```
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: copy nginx config
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: 0644
+      register: nginx_updated # <- here we registered a state named nginx_updated and it will get true if this task marked as changed
+    
+    - name: restart nginx
+      when: nginx_updated.changed # <- using registered state here
+      service:
+        name: nginx
+        state: restarted
+```
