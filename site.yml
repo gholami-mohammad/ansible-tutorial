@@ -20,79 +20,78 @@
       apt:
         update_cache: yes
         upgrade: dist
-      
 
 - hosts: web_servers
   become: true
   tasks:
-  - name: install nginx package
-    tags:
-      - nginx
-      - centos
-      - ubuntu
-    package: # <- selects the right package manager base on the target OS
-      name: nginx
-      state: latest
-  - name: start nginx service
-    tags: 
-      - nginx
-      - services
-    service:
-      name: nginx
-      state: started # it is equal to 'sudo systemctl start nginx' command in centos and ubuntu
-      enabled: yes # it is equal to 'sudo systemctl enable nginx' command in centos and ubuntu
-  - name: copy nginx config file
-    tags:
-      - nginx
-      - ubuntu
-      - centos
-    copy:
-      src: nginx.conf
-      dest: /etc/nginx/nginx.conf
-      owner: root
-      group: root
-      mode: 0644
-    register: nginx_updated # <- here we registered a state named nginx_updated and it will get true if this task marked as changed
-  
-  - name: restart nginx if config changed
-    tags: 
-      - nginx
-      - config
-    when: nginx_updated.changed # <- using registered state here
-    service:
-      name: nginx
-      state: restarted
+    - name: install nginx package
+      tags:
+        - nginx
+        - centos
+        - ubuntu
+      package: # <- selects the right package manager base on the target OS
+        name: nginx
+        state: latest
+    - name: start nginx service
+      tags: 
+        - nginx
+        - services
+      service:
+        name: nginx
+        state: started # it is equal to 'sudo systemctl start nginx' command in centos and ubuntu
+        enabled: yes # it is equal to 'sudo systemctl enable nginx' command in centos and ubuntu
+    - name: copy nginx config file
+      tags:
+        - nginx
+        - ubuntu
+        - centos
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: 0644
+      register: nginx_updated # <- here we registered a state named nginx_updated and it will get true if this task marked as changed
+    
+    - name: restart nginx if config changed
+      tags: 
+        - nginx
+        - config
+      when: nginx_updated.changed # <- using registered state here
+      service:
+        name: nginx
+        state: restarted
 
-  - name: install php packages
-    tags:
-      - php
-      - ubuntu
-    package:
-      name: 
-        - php7.4
-        - php7.4-fpm
-      state: latest
-  - name: start php-fpm service
-    tags: 
-      - php-fpm
-      - services
-    service:
-      name: php7.4-fpm
-      state: started # it is equal to 'sudo systemctl start php-fpm' command in centos and ubuntu
-      enabled: yes # it is equal to 'sudo systemctl enable php-fpm' command in centos and ubuntu
-  - name: install git package
-    tags:
-      - git
-      - ubuntu
-      - centos
-    package:
-      name: git
-      state: latest
-  - name: copy default html file for web servers
-    tags: html
-    copy:
-      src: default_site.html
-      dest: /var/www/html/index.html
-      owner: root
-      group: root
-      mode: 0644
+    - name: install php packages
+      tags:
+        - php
+        - ubuntu
+      package:
+        name: 
+          - php7.4
+          - php7.4-fpm
+        state: latest
+    - name: start php-fpm service
+      tags: 
+        - php-fpm
+        - services
+      service:
+        name: php7.4-fpm
+        state: started # it is equal to 'sudo systemctl start php-fpm' command in centos and ubuntu
+        enabled: yes # it is equal to 'sudo systemctl enable php-fpm' command in centos and ubuntu
+    - name: install git package
+      tags:
+        - git
+        - ubuntu
+        - centos
+      package:
+        name: git
+        state: latest
+    - name: copy default html file for web servers
+      tags: html
+      copy:
+        src: default_site.html
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: 0644

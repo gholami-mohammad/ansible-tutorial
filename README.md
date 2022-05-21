@@ -355,3 +355,6 @@ You want to register a state change after a task was executed, and then use that
         name: nginx
         state: restarted
 ```
+
+## Adding User
+A good example of creating a limited user and sudoer user added to the [bootstrap.yml](./bootstrap.yml) file.

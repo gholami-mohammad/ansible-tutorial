@@ -1,0 +1,51 @@
+---      
+- hosts: all
+  become: true
+  vars_prompt: # <- promt to get the value of deployer_password variable
+    - name: deployer_password
+      private: true
+      prompt: "Enter the deployer user's password"
+      confirm: true
+      salt_size: 8
+
+  tasks:
+    - name: create app-runner user
+      tags: always
+      when: ansible_distribution == "Ubuntu"
+      user:
+        name: app-runner
+        shell: /sbin/nologin # <- user cant not login 
+        create_home: no
+        comment: "The user used for running applications services"
+        state: present
+        uid: 1245
+    
+    - name: create deployer user
+      tags: always
+      user:
+        name: deployer
+        group: root
+        shell: /bin/bash
+        password: "{{deployer_password | password_hash('sha512')}}"
+        create_home: yes
+        comment: "The user used for deploying application into servers"
+        state: present
+        uid: 1246
+
+    - name: copy deployer sudoer file to sudoers.d
+      tags: always
+      copy:
+        src: deployer_user
+        dest: /etc/sudoers.d/deployer
+        owner: root
+        group: root
+        mode: 0440
+        validate: 'visudo -cf %s'
+    
+    - name: add local user's ssh key to deployer user
+      tags: always
+      authorized_key:
+        user: deployer
+        key: "{{ item }}"
+      with_file:
+        - ~/.ssh/ansible.pub
