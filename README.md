@@ -372,3 +372,11 @@ To use these roles in the playbook, simply use them like this:
 ```
 
 The example of using roles is added in the [site_using_roles.yml](./site_using_roles.yml) file. (This example was implemented for Ubuntu servers and  tested on Ubuntu 20.04)
+
+## Handlers
+
+Handlers are special tasks that run at the end of a playbook run. They must call using the `notify` keyword.
+
+Handlers could be placed in a directory name handlers in the root directory or root directory of each role.
+
+The example of the handles was added to the previous example to restart the Nginx service in the previous example.
