@@ -1,0 +1,16 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - package_update
+
+- hosts: web_servers
+  become: true
+  roles:
+    - php8
+    - nginx
+
+- hosts: db_servers
+  become: true
+  roles:
+    - postgresql

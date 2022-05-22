@@ -1,0 +1,16 @@
+- name: Add php 8 package repository
+  tags: 
+    - php
+  when: ansible_distribution_version == "20.04"
+  apt_repository:
+    repo: ppa:ondrej/php
+    update_cache: yes
+  register: need_package_update
+
+- name: Install php 8 and php-fpm  pakcages on Ubuntu 20.04 and 22.04
+  tags: 
+    - php
+  apt:
+    name: 
+     - php8.1
+     - php8.1-fpm

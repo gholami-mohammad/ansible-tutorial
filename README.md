@@ -358,3 +358,18 @@ You want to register a state change after a task was executed, and then use that
 
 ## Adding User
 A good example of creating a limited user and sudoer user added to the [bootstrap.yml](./bootstrap.yml) file.
+
+## Roles
+The roles are for breaking the playbook into multiple files. So they are easier to read and maintain and also make the files reusable.
+
+To create tasks for roles, you must create this directory structure: `roles/ROLE_NAME/tasks/main.yml`.
+To use these roles in the playbook, simply use them like this:
+```
+---
+- hosts: all
+  become: true
+  roles:
+    - a_role_name # <- it points to a file in `roles/a_role_name/tasks/main.yml`
+```
+
+The example of using roles is added in the [site_using_roles.yml](./site_using_roles.yml) file. (This example was implemented for Ubuntu servers and  tested on Ubuntu 20.04)
