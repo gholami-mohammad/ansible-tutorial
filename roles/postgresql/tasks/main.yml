@@ -23,3 +23,14 @@
   apt:
     name: 
      - postgresql-14
+
+- name: add pg_hba.conf
+  tags:
+    - postgresql
+  template:
+    src: pg_hba.conf.j2
+    dest: /etc/postgresql/14/main/pg_hba.conf
+    mode: 0640
+    owner: postgres
+    group: postgres
+  notify: restart_postgresql

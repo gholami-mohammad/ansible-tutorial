@@ -411,3 +411,30 @@ username: example
 create_home: no
 user_uid: 999
 ```
+
+## Templates
+Templates are used for creating predefined files on nodes based on the variables of each host. It uses Jinja2 templating system.
+
+Template files are placed in a directory called `templates` in each role's root directory with `.j2` extension.
+
+Let's create the pg_hba.conf file for the Postgresql using template.
+
+```
+# roles/postgresql/templates/pg_hba.conf.j2
+local   all                         postgres                                peer
+
+# TYPE  DATABASE                    USER            ADDRESS                 METHOD
+local   all                         all                                     peer
+
+# IPv4 local connections:
+host    {{ db_name }}             {{ username }}    127.0.0.1/32            {{ encryption }}
+
+# IPv6 local connections:
+host    {{ db_name }}             {{ username }}    ::1/128                 {{ encryption }}
+
+local   replication                 all                                     peer
+host    replication                 all             127.0.0.1/32            {{ encryption }}
+host    replication                 all             ::1/128                 {{ encryption }}
+```
+
+And the playbook is [postgresql](./roles/postgresql/tasks/main.yml) that this template added to it.
