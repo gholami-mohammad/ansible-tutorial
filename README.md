@@ -292,8 +292,7 @@ file option to use tags to run playbooks: [reference](https://docs.ansible.com/a
 
 * `--tags untagged` - run only tasks with no tags
 
-
-exmple:
+example:
 ```
 ansible-playbook --tags "nginx,ubuntu" --ask-become-pass site.yml
 ```
