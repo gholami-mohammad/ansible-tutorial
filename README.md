@@ -380,3 +380,34 @@ Handlers are special tasks that run at the end of a playbook run. They must call
 Handlers could be placed in a directory name handlers in the root directory or root directory of each role.
 
 The example of the handles was added to the previous example to restart the Nginx service in the previous example.
+
+## Host variables
+If you are using variables in the playbook and they are different in each host, the best way of managing variables is the host variable.
+
+First, create a directory named host_vars in the root directory. To define the variables of each node, you should create a file with the name of the node with the .yml extension. For example, if the server node in the inventory file is 192.168.1.147, so the host vars file must be `192.168.1.147.yml`.
+
+Example:
+```
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: add default user
+      user:
+        name: "{{ username }}"
+        create_home: "{{ create_home }}"
+        state: present
+        uid: "{{ user_uid }}"
+```
+The `host_vars/192.168.1.147.yml` looks like this:
+```
+username: example
+create_home: yes
+user_uid: 123
+```
+And `host_vars/192.168.1.150.yml` looks like this:
+```
+username: example
+create_home: no
+user_uid: 999
+```

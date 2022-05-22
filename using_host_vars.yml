@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: add default user
+      user:
+        name: "{{ username }}"
+        create_home: "{{ create_home }}"
+        state: present
+        uid: "{{ user_uid }}"
